@@ -14,4 +14,4 @@ user_fields = api.model('FoodRecommendation', {
 
 upload_parser = api.parser()
 upload_parser.add_argument('voice', location='files',type=FileStorage)
-upload_parser.add_argument('word', type=int, help='Rate cannot be converted')
+upload_parser.add_argument('word', type=str, help='Should Be Lowercase')
