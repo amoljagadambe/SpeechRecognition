@@ -19,9 +19,7 @@ Create a virtualenv in the flask-application directory and activate it::
     
 Install Dependencies in Virtual Environment::
 
-    pip install swig libpulse-dev libasound2-dev
     pip install -r requirements.txt
-    pip install pocketsphinx 
     
  RUN
  ---
