@@ -1,0 +1,39 @@
+Word scoring REST call -
+
+Request JSON :
+	{
+		"audio-file":"c://temp/cat.wav"
+	}
+Response JSON :
+	{
+		"audio-file":"c://temp/cat.wav",
+		"Word": "Vocabulary",
+		"phoneme": "V OW K AE B Y AH L EH R IY",
+		"syllable": "vo-cab-u-lary",
+		"score": "90",
+		"syllable-timeframe": {
+			"V OW": [
+				0.48,
+				0.59
+			],
+			"K AE B Y": [
+				0.59,
+				0.84
+			],
+			"AH": [
+				0.84,
+				0.87
+			],
+			"L EH R IY": [
+				0.87,
+				1.16
+			]
+		},
+		"syllable-score": {
+			"vo": "GOOD",
+			"cab": "GOOD",
+			"u": "GOOD",
+			"lary": "BAD"
+		}
+		"processing-time":"6.82"
+	}
