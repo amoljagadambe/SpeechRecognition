@@ -1,1 +1,1 @@
-from application.resources.recommender.recom_controllers import recommenderController, predicition
+from scoringAPI.scoring_engine.server import wordScoringApi, sentenceScoringApi

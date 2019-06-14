@@ -12,3 +12,4 @@ requests==2.22.0
 librosa==0.6.3
 flask-restplus==0.12.1
 flask-cors==3.0.8
+python-dotenv==0.10.3

@@ -5,10 +5,10 @@ import os
 from os import path
 from pocketsphinx.pocketsphinx import *
 
-#BASE_FOLDER = os.path.abspath(os.path.dirname(__name__))
-#upload_folder = BASE_FOLDER + '/scoringAPI/'
+BASE_FOLDER = os.path.abspath(os.path.dirname(__name__))
+upload_folder = BASE_FOLDER + '/scoringAPI/'
 class cmuPhonemeDict(object):
-    def __init__(self, dict_file= 'scoring_engine/model/en-us.dict'):
+    def __init__(self, dict_file=upload_folder+'scoring_engine/model/en-us.dict'):
         self.dict_file = dict_file
         self.dict = {}
         self.load_dict()
@@ -32,7 +32,7 @@ class cmuPhonemeDict(object):
 class psxDecoder(object):
 
     def __init__(self, MODEL_DIR):
-        #print(MODEL_DIR)
+        print(MODEL_DIR)
         self.config = Decoder.default_config()
         try:
             self.config.set_string('-hmm', os.path.join(MODEL_DIR, 'en-us'))
@@ -143,6 +143,6 @@ def get_whole_phoneme(word):
 
 
 def get_psxDecoder():
-    #print(upload_folder)
-    return psxDecoder('scoring_engine/model')
+    print(upload_folder)
+    return psxDecoder(upload_folder+'scoring_engine/model')
 
