@@ -1,9 +1,0 @@
-pydub
-wave
-numpy
-scipy
-nltk
-fuzzywuzzy
-pyphen
-gTTS
-pocketsphinx
