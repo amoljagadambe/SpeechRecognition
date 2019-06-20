@@ -145,4 +145,3 @@ def get_whole_phoneme(word):
 def get_psxDecoder():
     print(upload_folder)
     return psxDecoder(upload_folder+'scoring_engine/model')
-

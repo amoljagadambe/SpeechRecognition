@@ -7,7 +7,7 @@ CORS(app)
 
 app.config.from_envvar('APP_SETTINGS')
 
-api = Api(app, title='ScoringAPI-ML', description='Created by Whiz IT Services', default='Flask', default_label='Controllers',
-          validate=True)
+api = Api(app, title='ScoringAPI-ML', description='Created by GAIS ', default='Flask', default_label='Controllers',
+          validate=False)
 
 from scoringAPI import home

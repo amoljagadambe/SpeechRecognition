@@ -99,7 +99,7 @@ def sentence_scoring(filename, file_path, sentence):
     # convert file
     cv_filename = file_path[:-4] + '_conv.wav'
     if not util.convert_file(file_path, cv_filename):
-        return 'Fail'
+        return 'Fail3-'
 
     # file name:  <speaker name>_<sentence>_<iteration>
     sentence = filter_sentence_by_punctuation(sentence)

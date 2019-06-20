@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 from . import util
 import pyphen
@@ -9,16 +10,15 @@ from .psxDecoder import get_psxDecoder, get_audio_transcribe, cmuPhonemeDict
 from .phoneRecognizer import recognize_file
 from .accentRecognizer import accent_evaluate_from_seg
 from .util import get_tts
+import pdb
 
 _decoder = get_psxDecoder()
 _phone_dict = cmuPhonemeDict()
 result_csv = 'test_scoring.csv'
-BASE_FOLDER = os.path.abspath(os.path.dirname(__name__))
-upload_folder = BASE_FOLDER + '/scoringAPI/scoring_engine'
-TEMP_FOLDER = BASE_FOLDER + '/scoringAPI/temp'
+
 
 def load_mapDict():
-    data_path = os.path.join(upload_folder, 'phDic.cfg')
+    data_path = os.path.join('scoring_engine', 'phDic.cfg')
     with open(data_path, 'rb') as f:
         data = pickle.load(f)
     return data
@@ -80,13 +80,14 @@ def get_mapping_syllable(text_word):
     return res_indices, res_phonemes, syllables, cur_phoneme
 
 
-def syllable_recognize(filename, file_path, word):
+def syllable_recognize(filename, file_path, word, customerid):
     result_answer = {}
     result_answer['filename'] = filename
     result_answer['word'] = word
+    result_answer['customerid'] = customerid
 
-    # """
-    align_result = util.get_mfa_aligning(file_path, word)
+    pdb.set_trace()
+    align_result = util.get_mfa_aligning(file_path, word, customerid)
     syll_indices, syll_list, sylls, phonemes = get_mapping_syllable(word)
 
     print('get_mapping_syllable: [{}, {}, {}, {}]'.format(syll_indices, syll_list, sylls, phonemes))
@@ -120,14 +121,15 @@ def syllable_recognize(filename, file_path, word):
     print('results --> {}: {}]'.format(phoneme_score, recog_phoneme))
 
     # get Syllable score
-    temp_folder = TEMP_FOLDER
+    temp_folder = 'temp'
     #if os.path.exists(temp_folder):
     #    os.system('rm -rf {}'.format(temp_folder))
     #os.mkdir(temp_folder)
     tts_file = get_tts(temp_folder, word, 0)
-    tts_align = util.get_mfa_aligning(tts_file, word)
+    tts_align = util.get_mfa_aligning(tts_file, word, customerid)
     if len(tts_align) == 0:
-        return None  # result_answer
+        result_answer['error']="fail2--"
+        return result_answer  # result_answer
     tts_timemapping = []
     for i, syll_ind in enumerate(syll_indices):
         if i < len(syll_indices) - 1:
@@ -165,18 +167,28 @@ def validate_filename(filename):
     return speaker, word, revision
 
 
-def word_score(word, filename, voice_file):
+def word_score(word, filename, voice_file, customerid):
     # convert file
     cv_filename = voice_file[:-4] + '_conv.wav'
     if not util.convert_file(voice_file, cv_filename):
         return 'Fail1-'
     # _, word, _ = validate_filename(f)
     time1 = float(round(time.time()))
-    results = syllable_recognize(filename, cv_filename, word)
+
+    pdb.set_trace()
+    results = syllable_recognize(filename, cv_filename, word, customerid)
     time2 = float(round(time.time()))
     delta_time = time2 - time1
-    if results is None:
-        return 'Fail2-'
+    if results is None or results['error'] != '':
+        res = json.dumps({"audio-file": filename,
+                          "word": word,
+                          "word-phoneme": results["phonemes"],
+                          "user-phoneme": results["extracted-phoneme"],
+                          "syllable": results["syllable"],
+                          "score": results["Phoneme-score"],
+                          "error": results["error"],
+                          "processing-time": delta_time})
+        return res
 
     # result JSON
     tm_mapping = []

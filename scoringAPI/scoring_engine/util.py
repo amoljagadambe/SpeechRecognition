@@ -194,24 +194,42 @@ def get_pitch_level(nInitial, nFinal, nMainPos, nMain):
     return pitchLevel
 
 
-def get_mfa_aligning(wave_file, word_text):
+def get_mfa_aligning(wave_file, word_text, customerid):
     if not os.path.exists(wave_file):
         print("wave file does not exist.")
         return None
-
+    import pdb
+    pdb.set_trace()
     import getpass
-    home_dir = 'home/hp'
-    tmp_dir = os.path.join(home_dir, 'Documents/MFA')
-    os.system("rm -rf {}".format(tmp_dir))
+    home_dir = '/home/hp'
+    mfa_home_loc = os.path.join(home_dir, 'Documents/MFA', customerid)
+    tmp_dir = os.path.join(home_dir, 'Documents/MFA', customerid, word_text)
+    if os.path.exists(tmp_dir):
+        os.system("rm -rf {}".format(tmp_dir))
 
-    src_folder = os.path.join('scoring_engine', 'aligner', 'data')
-    out_folder = os.path.join('scoring_engine', 'aligner', 'out')
+    src_folder = os.path.join('scoring_engine', 'aligner', 'data', customerid)
+    if not os.path.exists(src_folder):
+        try:
+            os.mkdir(src_folder)
+        except Exception as e:
+            print("error in get_mfa_align",e)
+    src_folder = os.path.join('scoring_engine', 'aligner', 'data', customerid, word_text)
     if os.path.exists(src_folder):
         os.system('rm -rf {}'.format(src_folder))
-    os.mkdir(src_folder)
+    import pdb
+    pdb.set_trace()
+    try:
+        os.mkdir(src_folder)
+    except Exception as e:
+        print("error at the end of mfa_align",e)
 
+    out_folder = os.path.join('scoring_engine', 'aligner', 'out', customerid)
+    if not os.path.exists(out_folder):
+        os.mkdir(out_folder)
+    out_folder = os.path.join('scoring_engine', 'aligner', 'out', customerid, word_text)
     if os.path.exists(out_folder):
         os.system('rm -rf {}'.format(out_folder))
+    os.mkdir(out_folder)
 
     text_filename = os.path.basename(wave_file)[:-4] + '.lab'
     text_filepath = os.path.join(src_folder, text_filename)
@@ -226,15 +244,14 @@ def get_mfa_aligning(wave_file, word_text):
 
     bin_path = os.path.join('scoring_engine', 'aligner', 'bin', 'mfa_align')
     lexi_path = os.path.join('scoring_engine', 'aligner', 'pretrained_models', 'lexicon.txt')
-    # cmds = '{} {} {} english {}'.format(bin_path, src_folder, lexi_path, out_folder)
-    cmds = "{} {} {} english {}".format(bin_path, src_folder, lexi_path, out_folder)
+    cmds = "{} -t {} {} {} english {}".format(bin_path, mfa_home_loc, src_folder, lexi_path, out_folder)
     try:
         os.system(cmds)
     except Exception as e:
         print(e)
 
     grid_filename = os.path.basename(wave_file)[:-4] + '.TextGrid'
-    grid_filepath = os.path.join('scoring_engine', 'aligner', os.path.basename(out_folder), grid_filename)
+    grid_filepath = os.path.join('scoring_engine', 'aligner', 'out', customerid, os.path.basename(out_folder), grid_filename)
     if os.path.exists(grid_filepath):
         segments = parse_TextGrid.read_TextGrid(grid_filepath)
     else:
