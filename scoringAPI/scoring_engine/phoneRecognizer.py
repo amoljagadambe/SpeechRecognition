@@ -12,6 +12,7 @@ def recognize_file(ds, file_path, real_word):
     :param real_word: transcription of input audio - one word
     :return: phonemes array of real_word, recognized word, score
     """
+    print()
     try:
         res1, res2 = get_audio_transcribe(ds, file_path)
         result1 = ' '.join(x[0] for x in res1)

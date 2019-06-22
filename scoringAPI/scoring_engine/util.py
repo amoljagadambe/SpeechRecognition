@@ -11,6 +11,8 @@ from . import parse_TextGrid
 from gtts import gTTS
 
 
+dir_path = os.getcwd()
+
 def get_tts(dir, text, index):
 
     if index == 0:
@@ -34,7 +36,9 @@ def convert_file(src_file, dst_file):
         src_file,
         dst_file)
     try:
+        print("counter is here")
         os.system(convert_cmd)
+        print("counter sucessfull")
         return True
     except Exception as error:
         print(error)
@@ -199,40 +203,45 @@ def get_mfa_aligning(wave_file, word_text, customerid):
         print("wave file does not exist.")
         return None
     import pdb
-    pdb.set_trace()
+    # pdb.set_trace()
     import getpass
-    home_dir = '/home/hp'
-    mfa_home_loc = os.path.join(home_dir, 'Documents/MFA', customerid)
-    tmp_dir = os.path.join(home_dir, 'Documents/MFA', customerid, word_text)
+    home_dir = dir_path
+    mfa_home_loc = os.path.join(home_dir, '/scoringAPI/MFA/', customerid)
+    tmp_dir = os.path.join(home_dir, '/scoringAPI/MFA/', customerid, word_text)
+    #print("deubg here")
+    #print("utilts dirs", dir_path)
     if os.path.exists(tmp_dir):
         os.system("rm -rf {}".format(tmp_dir))
 
-    src_folder = os.path.join('scoring_engine', 'aligner', 'data', customerid)
+    src_folder = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'data', customerid)
+    print("now updated path",src_folder)
     if not os.path.exists(src_folder):
         try:
             os.mkdir(src_folder)
         except Exception as e:
             print("error in get_mfa_align",e)
-    src_folder = os.path.join('scoring_engine', 'aligner', 'data', customerid, word_text)
+    src_folder = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'data', customerid, word_text)
     if os.path.exists(src_folder):
         os.system('rm -rf {}'.format(src_folder))
     import pdb
-    pdb.set_trace()
+    # pdb.set_trace()
     try:
         os.mkdir(src_folder)
     except Exception as e:
         print("error at the end of mfa_align",e)
 
-    out_folder = os.path.join('scoring_engine', 'aligner', 'out', customerid)
+    out_folder = os.path.join(home_dir,'scoringAPI/scoring_engine', 'aligner', 'out', customerid)
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
-    out_folder = os.path.join('scoring_engine', 'aligner', 'out', customerid, word_text)
+    out_folder = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'out', customerid, word_text)
     if os.path.exists(out_folder):
         os.system('rm -rf {}'.format(out_folder))
     os.mkdir(out_folder)
-
+    print("wave file name amol",wave_file)
     text_filename = os.path.basename(wave_file)[:-4] + '.lab'
+    print(text_filename)
     text_filepath = os.path.join(src_folder, text_filename)
+    print(text_filepath)
     if os.path.exists(text_filepath):
         try:
             os.remove(text_filepath)
@@ -242,8 +251,8 @@ def get_mfa_aligning(wave_file, word_text, customerid):
         lab.write(str(word_text))
     shutil.copy(wave_file, os.path.join(src_folder, os.path.basename(wave_file)))
 
-    bin_path = os.path.join('scoring_engine', 'aligner', 'bin', 'mfa_align')
-    lexi_path = os.path.join('scoring_engine', 'aligner', 'pretrained_models', 'lexicon.txt')
+    bin_path = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'bin', 'mfa_align')
+    lexi_path = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'pretrained_models', 'lexicon.txt')
     cmds = "{} -t {} {} {} english {}".format(bin_path, mfa_home_loc, src_folder, lexi_path, out_folder)
     try:
         os.system(cmds)
@@ -251,7 +260,9 @@ def get_mfa_aligning(wave_file, word_text, customerid):
         print(e)
 
     grid_filename = os.path.basename(wave_file)[:-4] + '.TextGrid'
-    grid_filepath = os.path.join('scoring_engine', 'aligner', 'out', customerid, os.path.basename(out_folder), grid_filename)
+    print("=====>"*5,grid_filename)
+    grid_filepath = os.path.join(home_dir, 'scoringAPI/scoring_engine', 'aligner', 'out', customerid, os.path.basename(out_folder), grid_filename)
+    print("=====>" * 5, grid_filepath)
     if os.path.exists(grid_filepath):
         segments = parse_TextGrid.read_TextGrid(grid_filepath)
     else:

@@ -7,6 +7,7 @@ from pocketsphinx.pocketsphinx import *
 
 BASE_FOLDER = os.path.abspath(os.path.dirname(__name__))
 upload_folder = BASE_FOLDER + '/scoringAPI/'
+
 class cmuPhonemeDict(object):
     def __init__(self, dict_file=upload_folder+'scoring_engine/model/en-us.dict'):
         self.dict_file = dict_file
@@ -125,7 +126,7 @@ def get_audio_transcribe(decoder, audio_file):
 
 def get_whole_phoneme(word):
     word = word.lower()
-    with open('scoring_engine/model/en-us.dict', 'rt') as dict:
+    with open(upload_folder+'scoring_engine/model/en-us.dict', 'rt') as dict:
         all_phone = []
         for d_word in dict:
             d_word = d_word.strip()

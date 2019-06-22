@@ -10,7 +10,9 @@ import os
 
 
 # set variables
-upload_tmp_folder = os.path.join('..', 'scoringAPI', 'uploads')
+dir_path = BASE_DIR = os.getcwd()
+#print("amol",dir_path)
+upload_tmp_folder = dir_path + '/scoringAPI/uploads/'
 
 word_scoring = api.namespace('VoiceProcessor', description='Operations related to word_scoring')
 
@@ -66,7 +68,7 @@ class wordScoringApi(Resource):
             print("processing file: {}".format(upload_filename))
             try:
                 import pdb
-                pdb.set_trace()
+                # pdb.set_trace()
                 res = syllableScoring.word_score(str(word_name).lower(), filename, upload_filename, customerid)
                 # os.remove(upload_filename)
             except Exception as e:
@@ -111,7 +113,7 @@ class sentenceScoringApi(Resource):
 
         if sentence == '':
             res = json.dumps({"result": "Input sentence Error!"})
-        elif os.path.exists(upload_filename):
+        elif os.path.exists(tmp_file_path):
             print("processing file: {}".format(upload_filename))
             try:
                 res = word_alignment.sentence_scoring(filename, upload_filename, sentence)

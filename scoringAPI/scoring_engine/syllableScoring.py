@@ -15,10 +15,10 @@ import pdb
 _decoder = get_psxDecoder()
 _phone_dict = cmuPhonemeDict()
 result_csv = 'test_scoring.csv'
-
+dir_path = os.getcwd()
 
 def load_mapDict():
-    data_path = os.path.join('scoring_engine', 'phDic.cfg')
+    data_path = os.path.join(dir_path, 'scoringAPI/scoring_engine', 'phDic.cfg')
     with open(data_path, 'rb') as f:
         data = pickle.load(f)
     return data
@@ -86,7 +86,7 @@ def syllable_recognize(filename, file_path, word, customerid):
     result_answer['word'] = word
     result_answer['customerid'] = customerid
 
-    pdb.set_trace()
+    # pdb.set_trace()
     align_result = util.get_mfa_aligning(file_path, word, customerid)
     syll_indices, syll_list, sylls, phonemes = get_mapping_syllable(word)
 
@@ -114,14 +114,14 @@ def syllable_recognize(filename, file_path, word, customerid):
         for seg in comp_align_result:
             align_result.append([seg[1], seg[2], seg[0]])
         result_answer['timemapping'] = align_result
-
+    print("here is the debugger now")
     _, recog_phoneme, phoneme_score = recognize_file(_decoder, file_path, word)
     result_answer['Phoneme-score'] = phoneme_score
     result_answer['extracted-phoneme'] = recog_phoneme
     print('results --> {}: {}]'.format(phoneme_score, recog_phoneme))
 
     # get Syllable score
-    temp_folder = 'temp'
+    temp_folder = dir_path + '/scoringAPI/scoring_engine/temp'
     #if os.path.exists(temp_folder):
     #    os.system('rm -rf {}'.format(temp_folder))
     #os.mkdir(temp_folder)
@@ -170,12 +170,16 @@ def validate_filename(filename):
 def word_score(word, filename, voice_file, customerid):
     # convert file
     cv_filename = voice_file[:-4] + '_conv.wav'
+    print("right from here")
+    print(filename)
+    print(word)
+    print(cv_filename)
     if not util.convert_file(voice_file, cv_filename):
         return 'Fail1-'
     # _, word, _ = validate_filename(f)
     time1 = float(round(time.time()))
 
-    pdb.set_trace()
+    # pdb.set_trace()
     results = syllable_recognize(filename, cv_filename, word, customerid)
     time2 = float(round(time.time()))
     delta_time = time2 - time1
