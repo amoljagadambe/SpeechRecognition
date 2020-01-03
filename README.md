@@ -1,7 +1,7 @@
-hotelwiki-observer
+Speech-Recognition
 -------
 
-Customer Behavioural Prediction Application
+Word and Phoneme recognition application 
 
 Install
 -------
